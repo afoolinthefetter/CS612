@@ -5,6 +5,9 @@ from mininet.log import setLogLevel, info
 from mininet.cli import CLI
 import sys
 import time
+import argparse
+import subprocess
+
 
 class NetworkTopo(Topo):
     def build(self, **_opts):
@@ -28,8 +31,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--config', choices=['b', 'c'], required=True,
                         help='Specify config option: b or c')
-    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr', 'all'], required=False,
-                        help='Specify scheme option: reno, vegas, cubic, bbr, or all')
+    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr''], required=False,
+                        help='Specify scheme option: reno, vegas, cubic, bbr')
     parser.add_argument('--loss', type=float, required=False,
                         help='Specify loss as a number')
 
@@ -39,6 +42,11 @@ if __name__ == '__main__':
     lossValue = args.loss
     
 
+
+    topo = NetworkTopo()
+    net = Mininet(topo=topo, waitConnected=True)
+    net.start()
+    
     schemeAsArg = ""
     if schemeValue:
         schemeAsArg = " -Z " + schemeValue
@@ -48,21 +56,27 @@ if __name__ == '__main__':
     h4Server = h4.popen(['iperf', '-s'])
 
     
-    if configValue == 'b':
-        h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True)
-        h1Client.wait()
-    else:
-        h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True)
-        h2Client = h2.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True)
-        h3Client = h3.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True)
-        h1Client.wait()
-        h2Client.wait()
-        h3Client.wait()
+if configValue == 'b':
+    h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = h1Client.communicate()
+    print("h1Client Output:\n", output.decode())
+    print("h1Client Error:\n", error.decode())
+else:
+    h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = h1Client.communicate()
+    print("h1Client Output:\n", output.decode())
+    print("h1Client Error:\n", error.decode())
 
-    
-    topo = NetworkTopo()
-    net = Mininet(topo=topo, waitConnected=True)
-    net.start()
+    h2Client = h2.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = h2Client.communicate()
+    print("h2Client Output:\n", output.decode())
+    print("h2Client Error:\n", error.decode())
+
+    h3Client = h3.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = h3Client.communicate()
+    print("h3Client Output:\n", output.decode())
+    print("h3Client Error:\n", error.decode())
+
 
     CLI(net)
     h4Server.terminate()
