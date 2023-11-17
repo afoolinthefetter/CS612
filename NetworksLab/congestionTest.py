@@ -53,31 +53,42 @@ if __name__ == '__main__':
 
     #start h4 in server mode no matter what
     h1, h2, h3, h4 = net.getNodeByName('h1', 'h2', 'h3', 'h4')
-    h4Server = h4.popen(['iperf', '-s', '-p', '5001'])
+    
 
     
 if configValue == 'b':
+    h4Server = h4.popen(['iperf', '-s', '-p', '5001'])
+
     h1Client = h1.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = h1Client.communicate()
     print("h1Client Output:\n", output.decode())
     print("h1Client Error:\n", error.decode())
+    h4Server.terminate()
+
 else:
-    h1Client = h1.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = h1Client.communicate()
-    print("h1Client Output:\n", output.decode())
-    print("h1Client Error:\n", error.decode())
+    h4Server = h4.popen(['iperf', '-s', '-p', '5001', '-P', '3'])
 
-    h2Client = h2.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = h2Client.communicate()
-    print("h2Client Output:\n", output.decode())
-    print("h2Client Error:\n", error.decode())
+    def run_iperf_client(host, scheme_arg, output_file):
+        iperf_command = f'iperf -c {h4.IP()} -p 5001 {scheme_arg} > {output_file} 2>&1 &'
+        host.cmd(iperf_command)
 
-    h3Client = h3.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = h3Client.communicate()
-    print("h3Client Output:\n", output.decode())
-    print("h3Client Error:\n", error.decode())
+    output_files = []
+    for host in [h1, h2, h3]:
+        output_file = f"{host.name()}_output.txt"
+        output_files.append(output_file)
+        run_iperf_client(host, schemeAsArg, output_file)
 
+    # Wait for some time to ensure iperf clients have enough time to generate output
+    time.sleep(5)
+
+    # Terminate the iperf server
+    h4Server.terminate()
+
+    # Print the content of output files
+    for output_file in output_files:
+        with open(output_file, 'r') as file:
+            print(f"Content of {output_file}:\n{file.read()}")
 
     CLI(net)
-    h4Server.terminate()
+    
     net.stop()
