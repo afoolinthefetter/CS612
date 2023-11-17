@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--config', choices=['b', 'c'], required=True,
                         help='Specify config option: b or c')
-    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr''], required=False,
+    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr'], required=False,
                         help='Specify scheme option: reno, vegas, cubic, bbr')
     parser.add_argument('--loss', type=float, required=False,
                         help='Specify loss as a number')
@@ -46,33 +46,33 @@ if __name__ == '__main__':
     topo = NetworkTopo()
     net = Mininet(topo=topo, waitConnected=True)
     net.start()
-    
+
     schemeAsArg = ""
     if schemeValue:
         schemeAsArg = " -Z " + schemeValue
 
     #start h4 in server mode no matter what
     h1, h2, h3, h4 = net.getNodeByName('h1', 'h2', 'h3', 'h4')
-    h4Server = h4.popen(['iperf', '-s'])
+    h4Server = h4.popen(['iperf', '-s', '-p', '5001'])
 
     
 if configValue == 'b':
-    h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    h1Client = h1.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = h1Client.communicate()
     print("h1Client Output:\n", output.decode())
     print("h1Client Error:\n", error.decode())
 else:
-    h1Client = h1.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    h1Client = h1.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = h1Client.communicate()
     print("h1Client Output:\n", output.decode())
     print("h1Client Error:\n", error.decode())
 
-    h2Client = h2.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    h2Client = h2.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = h2Client.communicate()
     print("h2Client Output:\n", output.decode())
     print("h2Client Error:\n", error.decode())
 
-    h3Client = h3.popen(f'iperf -c {h4.IP()}{schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    h3Client = h3.popen(f'iperf -c {h4.IP()} -p 5001 {schemeAsArg}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = h3Client.communicate()
     print("h3Client Output:\n", output.decode())
     print("h3Client Error:\n", error.decode())
