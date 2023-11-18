@@ -72,46 +72,26 @@ def run():
     net = Mininet(topo=topo, waitConnected=True)
     net.start()
     
-    # #rA->rB and rA->rC
-    # #Static Routing For Router A
-    # net['rA'].cmd('route add -net 192.168.4.0/24 gw 192.168.8.3 rA-eth3')
-    # net['rA'].cmd('route add -net 192.168.5.0/24 gw 192.168.8.3 rA-eth3')
-    # net['rA'].cmd('route add -net 192.168.6.0/24 gw 192.168.10.2 rA-eth4')
-    # net['rA'].cmd('route add -net 192.168.7.0/24 gw 192.168.10.2 rA-eth4')
-
-    # #Static Routing For Router B
-    # net['rB'].cmd('route add -net 192.168.2.0/24 gw 192.168.8.2 rB-eth3')
-    # net['rB'].cmd('route add -net 192.168.3.0/24 gw 192.168.8.2 rB-eth3')
-    # net['rB'].cmd('route add -net 192.168.6.0/24 gw 192.168.9.3 rB-eth4')
-    # net['rB'].cmd('route add -net 192.168.7.0/24 gw 192.168.9.3 rB-eth4')
-
-    
-    # #Static Routing For Router C
-    # net['rC'].cmd('route add -net 192.168.2.0/24 gw 192.168.10.3 rC-eth4')
-    # net['rC'].cmd('route add -net 192.168.3.0/24 gw 192.168.10.3 rC-eth4')
-    # net['rC'].cmd('route add -net 192.168.4.0/24 gw 192.168.9.2 rC-eth3')
-    # net['rC'].cmd('route add -net 192.168.5.0/24 gw 192.168.9.2 rC-eth3')
-
-
-    #rA->rB->rC
-    #for rA
+    #rA->rB and rA->rC
+    #Static Routing For Router A
     net['rA'].cmd('route add -net 192.168.4.0/24 gw 192.168.8.3 rA-eth3')
     net['rA'].cmd('route add -net 192.168.5.0/24 gw 192.168.8.3 rA-eth3')
-    net['rA'].cmd('route add -net 192.168.6.0/24 gw 192.168.8.3 rA-eth3')
-    net['rA'].cmd('route add -net 192.168.7.0/24 gw 192.168.8.3 rA-eth3')
+    net['rA'].cmd('route add -net 192.168.6.0/24 gw 192.168.10.2 rA-eth4')
+    net['rA'].cmd('route add -net 192.168.7.0/24 gw 192.168.10.2 rA-eth4')
 
-    #for rB
+    #Static Routing For Router B
+    net['rB'].cmd('route add -net 192.168.2.0/24 gw 192.168.8.2 rB-eth3')
+    net['rB'].cmd('route add -net 192.168.3.0/24 gw 192.168.8.2 rB-eth3')
     net['rB'].cmd('route add -net 192.168.6.0/24 gw 192.168.9.3 rB-eth4')
     net['rB'].cmd('route add -net 192.168.7.0/24 gw 192.168.9.3 rB-eth4')
-    net['rB'].cmd('route add -net 192.168.2.0/24 gw 192.168.9.3 rB-eth4')
-    net['rB'].cmd('route add -net 192.168.3.0/24 gw 192.168.9.3 rB-eth4')
 
-    #for rC
+    
+    #Static Routing For Router C
     net['rC'].cmd('route add -net 192.168.2.0/24 gw 192.168.10.3 rC-eth4')
     net['rC'].cmd('route add -net 192.168.3.0/24 gw 192.168.10.3 rC-eth4')
-    net['rC'].cmd('route add -net 192.168.4.0/24 gw 192.168.10.3 rC-eth4')
-    net['rC'].cmd('route add -net 192.168.5.0/24 gw 192.168.10.3 rC-eth4')
-
+    net['rC'].cmd('route add -net 192.168.4.0/24 gw 192.168.9.2 rC-eth3')
+    net['rC'].cmd('route add -net 192.168.5.0/24 gw 192.168.9.2 rC-eth3')
+    
     info(net['rA'].cmd('route'))
     info(net['rB'].cmd('route'))
     info(net['rC'].cmd('route'))
