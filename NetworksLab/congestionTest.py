@@ -15,10 +15,10 @@ class NetworkTopo(Topo):
         s1 = self.addSwitch('s1')
         s2 = self.addSwitch('s2')
 
-        h1 = self.addSwitch('h1')
-        h2 = self.addSwitch('h2')
-        h3 = self.addSwitch('h3')
-        h4 = self.addSwitch('h4')
+        h1 = self.addHost('h1')
+        h2 = self.addHost('h2')
+        h3 = self.addHost('h3')
+        h4 = self.addHost('h4')
         
         self.addLink(s1, s2, intfName1='s1-eth0', intfName2='s2-eth0')
         self.addLink(h1, s1, intfName2='s1-eth1')
@@ -74,12 +74,12 @@ else:
 
     output_files = []
     for host in [h1, h2, h3]:
-        output_file = f"{host.name()}_output.txt"
+        output_file = f"{host.IP()}_output.txt"
         output_files.append(output_file)
         run_iperf_client(host, schemeAsArg, output_file)
 
     # Wait for some time to ensure iperf clients have enough time to generate output
-    time.sleep(5)
+    time.sleep(25)
 
     # Terminate the iperf server
     h4Server.terminate()
