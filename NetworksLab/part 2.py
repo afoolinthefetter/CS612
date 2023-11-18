@@ -3,6 +3,7 @@ from mininet.net import Mininet
 from mininet.node import Node
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
+from mininet.link import TCLink, Intf
 import sys
 import time
 import argparse
@@ -20,18 +21,18 @@ class NetworkTopo(Topo):
         h3 = self.addHost('h3')
         h4 = self.addHost('h4')
         
-        self.addLink(s1, s2, intfName1='s1-eth0', intfName2='s2-eth0')
-        self.addLink(h1, s1, intfName2='s1-eth1')
-        self.addLink(h2, s1, intfName2='s1-eth2')
-        self.addLink(h3, s2, intfName2='s2-eth1')
-        self.addLink(h4, s2, intfName2='s2-eth2')
+        self.addLink(h1,s1,cls=TCLink, **{'bw':2,'delay':2})
+        self.addLink(h2,s1,cls=TCLink, **{'bw':2,'delay':2})
+        self.addLink(h3,s2,cls=TCLink, **{'bw':2,'delay':2})
+        self.addLink(h4,s2,cls=TCLink, **{'bw':2,'delay':2})
+        self.addLink(s1,s2,cls=TCLink, **{'bw':8,'delay':2,'loss': args.loss})
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Your script description')
 
     parser.add_argument('--config', choices=['b', 'c'], required=True,
                         help='Specify config option: b or c')
-    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr'], required=False,
+    parser.add_argument('--scheme', choices=['reno', 'vegas', 'cubic', 'bbr'], required=False, default=0,
                         help='Specify scheme option: reno, vegas, cubic, bbr')
     parser.add_argument('--loss', type=float, required=False,
                         help='Specify loss as a number')
