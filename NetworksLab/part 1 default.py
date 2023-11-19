@@ -95,7 +95,13 @@ def run():
     info(net['rA'].cmd('route'))
     info(net['rB'].cmd('route'))
     info(net['rC'].cmd('route'))
+    ra_pcap = net['rA'].popen('tcpdump -i any -w ra_dump.pcap')
+    rb_pcap = net['rB'].popen('tcpdump -i any -w rb_dump.pcap')
+    rc_pcap = net['rC'].popen('tcpdump -i any -w rc_dump.pcap')
     CLI(net)
+    ra_pcap.terminate()
+    rb_pcap.terminate()
+    rc_pcap.terminate()
     net.stop()
 
 
