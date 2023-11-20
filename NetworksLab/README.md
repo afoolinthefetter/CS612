@@ -22,8 +22,8 @@ sudo python3 part\ 1\ clockwise.py
 
 | Routing Congiuration     | Description                |
 | :----------------------- | :------------------------- |
-| `part 1 default.py`      | h1 -> rB -> h5             |
-| `part 1 clockwise.py`    | h1 -> rA -> rB -> h5       |
+| `part 1 default.py`      | h1 -> rA -> rB -> h5             |
+| `part 1 clockwise.py`    | h1 -> rA -> rB -> rC -> h5       |
 
 ## Part Two
 
